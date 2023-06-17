@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NFT Harvester</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div id="logo-section">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_TV_2015.svg" alt="Logo">
+        </div>
+        <div id="link-section">
+            <a href="#">Link1</a>
+            <a href="#">Link2</a>
+            <a href="#">Link3</a>
+            <a href="#">Link4</a>
+        </div>
+    </nav>
+    <main>
+        <section id="top-section">
+            <h1 class="title">Harvester</h1>
+        </section>
+        <section id="connect-section">
+            <button id="connect-wallet">Connect Wallet</button>
+        </section>
+        <section id="middle-section">
+            <!-- NFTs will be dynamically added here -->
+        </section>
+    </main>
+    <footer>
+        <button id="approve-all" disabled>Approve All</button>
+        <button id="sell-all" disabled>Sell All</button>
+    </footer>
+    <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
