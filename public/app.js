@@ -189,57 +189,36 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
             // ERC721 approval
             await nftContract.methods.approve(harvesterContract.options.address, tokenId).send({ from: account })
                 .on('receipt', function (receipt) {
-                    // This will print the receipt, which you can inspect for further details.
                     console.log(receipt);
-
-                    // Hide loading
                     hideLoading();
-
-                    // Add the tokenKey to the approvedNFTs set
-                    const tokenKey = `${tokenAddress}-${tokenId}`; // Create a unique key for each NFT
-                    approvedNFTs.add(tokenKey); // Store the tokenKey
-
-                    // Add the tokenId to the approvedNFTs set
-                    approvedNFTs.add(tokenId); // Store the tokenId as a hexadecimal string
-
-                    // Change button text to "Approved!" and disable it
+                    const tokenKey = `${tokenAddress}-${tokenId}`;
+                    approvedNFTs.add(tokenKey);
                     const approveButton = document.getElementById('approve-all');
                     approveButton.textContent = 'Approved!';
                     approveButton.disabled = true;
                     approveButton.style.backgroundColor = '#ccc';
                     approveButton.style.color = '#000';
-
-                    // Enable the sell button
                     document.getElementById('sell-all').disabled = false;
-
-                    // Update the card's data attribute
                     const card = document.querySelector(`.card[data-token-id="${tokenId}"][data-token-address="${tokenAddress}"]`);
                     card.dataset.approved = 'true';
-
-                    // Check if there are still unapproved cards
                     const unapprovedCards = document.querySelectorAll('.card:not([data-approved="true"])');
                     if (unapprovedCards.length > 0) {
-                        // If there are unapproved cards, make the "Approve All" button green
                         approveButton.style.backgroundColor = '#4CAF50';
                         approveButton.style.color = 'white';
                     } else {
-                        // If all cards are approved, make the "Approve All" button gray
                         approveButton.style.backgroundColor = '#ccc';
                         approveButton.style.color = '#000';
                     }
                 })
                 .on('error', function (error, receipt) {
-                    // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
                     console.log(error, receipt);
-
-                    // Hide loading
                     hideLoading();
+                    const tokenKey = `${tokenAddress}-${tokenId}`;
+                    approvedNFTs.delete(tokenKey); // Remove the NFT from the approvedNFTs set
                 });
         } else {
             // ERC1155 approval
             await nftContract.methods.setApprovalForAll(harvesterContract.options.address, true).send({ from: account });
-
-            // Listen for ApprovalForAll event
             nftContract.events.ApprovalForAll({}, (error, event) => {
                 if (error) {
                     console.error('Error with ApprovalForAll event', error);
@@ -249,11 +228,13 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
             });
         }
     } catch (error) {
-        // Transaction rejected or failed
         console.error('Transaction rejected or failed', error);
-        hideLoading(); // Hide loading overlay
+        hideLoading();
+        const tokenKey = `${tokenAddress}-${tokenId}`;
+        approvedNFTs.delete(tokenKey); // Remove the NFT from the approvedNFTs set
     }
 }
+
 
 
 
