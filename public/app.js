@@ -125,11 +125,15 @@ async function displayNFTs() {
             const approveButton = document.getElementById('approve-all');
             const tokenId = card.getAttribute('data-token-id');
             if (approvedNFTs.has(tokenId)) {
-                approveButton.textContent = 'Approved';
+                approveButton.textContent = 'Approved!';
                 approveButton.disabled = true;
+                approveButton.style.backgroundColor = '#ccc';
+                approveButton.style.color = '#000';
             } else {
                 approveButton.textContent = 'Approve';
                 approveButton.disabled = false;
+                approveButton.style.backgroundColor = '#4CAF50';
+                approveButton.style.color = 'white';
 
                 // Get the token address from the selected card
                 const tokenAddress = card.getAttribute('data-token-address');
@@ -149,6 +153,9 @@ async function displayNFTs() {
         });
     });
 }
+
+
+
 
 
 
@@ -184,6 +191,7 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
 
                     // Hide loading
                     hideLoading();
+
                     // Add the tokenId to the approvedNFTs set
                     approvedNFTs.add(tokenId);
 
@@ -191,6 +199,8 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
                     const approveButton = document.getElementById('approve-all');
                     approveButton.textContent = 'Approved!';
                     approveButton.disabled = true;
+                    approveButton.style.backgroundColor = '#ccc';
+                    approveButton.style.color = '#000';
 
                     // Enable the sell button
                     document.getElementById('sell-all').disabled = false;
@@ -237,6 +247,7 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
         hideLoading(); // Hide loading overlay
     }
 }
+
 
 
 
@@ -352,4 +363,3 @@ document.getElementById('sell-all').addEventListener('click', async () => {
     hideLoading(); // Hide loading overlay when done
     await refreshNFTs(); // Refresh the display of NFTs
 });
-
