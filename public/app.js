@@ -56,6 +56,19 @@ const main = async () => {
     const parsedHarvesterABI = JSON.parse(HARVESTER_ABI);
     harvesterContract = new web3.eth.Contract(parsedHarvesterABI, HARVESTER_ADDRESS);
     displayNFTs();
+
+    // Check if there are unapproved cards
+    const unapprovedCards = document.querySelectorAll('.card:not([data-approved="true"])');
+    const approveAllButton = document.getElementById('approve-all');
+    if (unapprovedCards.length > 0) {
+        // If there are unapproved cards, make the "Approve All" button green
+        approveAllButton.style.backgroundColor = '#4CAF50';
+        approveAllButton.style.color = 'white';
+    } else {
+        // If all cards are approved, make the "Approve All" button gray
+        approveAllButton.style.backgroundColor = '#ccc';
+        approveAllButton.style.color = '#000';
+    }
 };
 
 
@@ -76,11 +89,10 @@ function createElement(token) {
 
     let tokenType = token.id.tokenMetadata.tokenType; // Get the token type from the token object
     // Add a checkmark overlay if the token is approved
-    const checkmarkOverlay = approvedNFTs.has(token.id.tokenId) ? '<img src="checkmark.png" class="checkmark-overlay">' : '';
+    const isApproved = token.isApproved ? 'true' : 'false'; // Get the approval status from the token object
 
     return `
-        <div class="card" data-token-id="${token.id.tokenId}" data-token-address="${token.contract.address}" data-token-type="${tokenType}" data-token-name="${name}">
-            ${checkmarkOverlay}
+        <div class="card" data-token-id="${token.id.tokenId}" data-token-address="${token.contract.address}" data-token-type="${tokenType}" data-token-name="${name}" data-approved="${isApproved}">
             ${imageElement}
             <div class="container">
                 <h4><b>${name}</b></h4>
@@ -172,6 +184,8 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
 
                     // Hide loading
                     hideLoading();
+                    // Add the tokenId to the approvedNFTs set
+                    approvedNFTs.add(tokenId);
 
                     // Change button text to "Approved!" and disable it
                     const approveButton = document.getElementById('approve-all');
@@ -180,6 +194,22 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
 
                     // Enable the sell button
                     document.getElementById('sell-all').disabled = false;
+
+                    // Update the card's data attribute
+                    const card = document.querySelector(`.card[data-token-id="${tokenId}"][data-token-address="${tokenAddress}"]`);
+                    card.dataset.approved = 'true';
+
+                    // Check if there are still unapproved cards
+                    const unapprovedCards = document.querySelectorAll('.card:not([data-approved="true"])');
+                    if (unapprovedCards.length > 0) {
+                        // If there are unapproved cards, make the "Approve All" button green
+                        approveButton.style.backgroundColor = '#4CAF50';
+                        approveButton.style.color = 'white';
+                    } else {
+                        // If all cards are approved, make the "Approve All" button gray
+                        approveButton.style.backgroundColor = '#ccc';
+                        approveButton.style.color = '#000';
+                    }
                 })
                 .on('error', function (error, receipt) {
                     // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
@@ -266,6 +296,14 @@ async function refreshNFTs() {
     } else {
         console.error('Data.ownedNfts is not an array:', data);
     }
+
+    // Reapply the checkmark overlay to approved NFTs
+    approvedNFTs.forEach(tokenId => {
+        const card = document.querySelector(`.card[data-token-id="${tokenId}"]`);
+        if (card) {
+            card.classList.add('approved');
+        }
+    });
 }
 
 
@@ -289,12 +327,9 @@ document.getElementById('approve-all').addEventListener('click', async () => {
         const tokenType = card.getAttribute('data-token-type');
         await approveNFT(tokenId, tokenAddress, tokenType);
 
-        // Add the approved token to the set
-        approvedNFTs.add(tokenId);
-
         // Add the checkmark overlay to the approved card
         const checkmarkOverlay = document.createElement('img');
-        checkmarkOverlay.src = 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-green-check-mark-icon-flat-style-png-image_5253210.jpg';
+        checkmarkOverlay.src = 'checkmark.png';
         checkmarkOverlay.classList.add('checkmark-overlay');
         card.prepend(checkmarkOverlay);
 
@@ -303,6 +338,7 @@ document.getElementById('approve-all').addEventListener('click', async () => {
     }
     hideLoading(); // Hide loading overlay when done
 });
+
 
 document.getElementById('sell-all').addEventListener('click', async () => {
     showLoading(); // Show loading overlay

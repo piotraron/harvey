@@ -45,6 +45,7 @@ body {
 }
 
 .card {
+    position: relative; /* Add this line */
     width: 25%;
     height: 300px;
     box-sizing: border-box;
@@ -57,6 +58,7 @@ body {
     overflow: hidden;
     cursor: pointer;
 }
+
 
 .card img {
     width: 100%;
@@ -77,6 +79,19 @@ body {
 .card .name {
     font-size: 14px;
     margin-top: 5px;
+}
+
+.card:hover {
+    opacity: 0.5;
+}
+
+.card.selected {
+    opacity: 0.5;
+    border-color: blue;
+}
+
+.card.approved {
+    opacity: 0.5;
 }
 
 #middle-section {
@@ -155,32 +170,17 @@ footer #sell-all {
     color: white;
 }
 
-.card:hover {
-    opacity: 0.5;
-}
 
-.card.selected {
-    opacity: 0.5;
-    border-color: blue;
-}
 
-.card {
-    cursor: pointer;
-}
-
-/* ... Rest of the existing styles ... */
 
 .checkmark-overlay {
     position: absolute;
+    src: url(checkmark.png);
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
-}
-
-.card.approved {
-    opacity: 0.5;
 }
 
 
