@@ -176,8 +176,6 @@ async function isERC1155Token(tokenAddress) {
 }
 
 async function approveNFT(tokenId, tokenAddress, tokenType) {
-    tokenId = parseInt(tokenId, 16); // Convert tokenId from hex to decimal
-    console.log(`Approving NFT with ID ${tokenId} and address ${tokenAddress}`);
     const isERC1155 = (tokenType === 'ERC1155');
     nftContract = new web3.eth.Contract(parsedNFTABI, tokenAddress);
     showLoading();
@@ -193,7 +191,7 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
                     hideLoading();
 
                     // Add the tokenId to the approvedNFTs set
-                    approvedNFTs.add(tokenId);
+                    approvedNFTs.add(tokenId); // Store the tokenId as a hexadecimal string
 
                     // Change button text to "Approved!" and disable it
                     const approveButton = document.getElementById('approve-all');
@@ -247,6 +245,8 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
         hideLoading(); // Hide loading overlay
     }
 }
+
+
 
 
 
