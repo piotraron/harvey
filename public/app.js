@@ -201,6 +201,16 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
                     document.getElementById('sell-all').disabled = false;
                     const card = document.querySelector(`.card[data-token-id="${tokenId}"][data-token-address="${tokenAddress}"]`);
                     card.dataset.approved = 'true';
+
+                    // Add the checkmark overlay to the approved card
+                    const checkmarkOverlay = document.createElement('img');
+                    checkmarkOverlay.src = 'checkmark.png';
+                    checkmarkOverlay.classList.add('checkmark-overlay');
+                    card.prepend(checkmarkOverlay);
+
+                    // Keep the image grayed out
+                    card.classList.add('approved');
+
                     const unapprovedCards = document.querySelectorAll('.card:not([data-approved="true"])');
                     if (unapprovedCards.length > 0) {
                         approveButton.style.backgroundColor = '#4CAF50';
