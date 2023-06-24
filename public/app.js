@@ -124,7 +124,10 @@ async function displayNFTs() {
 
             const approveButton = document.getElementById('approve-all');
             const tokenId = card.getAttribute('data-token-id');
-            if (approvedNFTs.has(tokenId)) {
+            const tokenAddress = card.getAttribute('data-token-address');
+            const tokenKey = `${tokenAddress}-${tokenId}`; // Create a unique key for each NFT
+
+            if (approvedNFTs.has(tokenKey)) {
                 approveButton.textContent = 'Approved!';
                 approveButton.disabled = true;
                 approveButton.style.backgroundColor = '#ccc';
@@ -153,6 +156,8 @@ async function displayNFTs() {
         });
     });
 }
+
+
 
 
 
@@ -189,6 +194,10 @@ async function approveNFT(tokenId, tokenAddress, tokenType) {
 
                     // Hide loading
                     hideLoading();
+
+                    // Add the tokenKey to the approvedNFTs set
+                    const tokenKey = `${tokenAddress}-${tokenId}`; // Create a unique key for each NFT
+                    approvedNFTs.add(tokenKey); // Store the tokenKey
 
                     // Add the tokenId to the approvedNFTs set
                     approvedNFTs.add(tokenId); // Store the tokenId as a hexadecimal string
